@@ -1,11 +1,11 @@
-
-  {
+{
   "development": {
     "username": "postgres",
-    "password": "postgr",
+    "password": "postgres",
     "database": "taskManagement",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "host": "postgres",
+    "dialect": "postgres",
+    "port": 5432
   },
 
   "test": {
