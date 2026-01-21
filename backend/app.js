@@ -1,39 +1,22 @@
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
-// Import sequelize
-const { sequelize } = require('./models');
-
-// Import routes
-
-const app = express();
-
-// ====== MIDDLEWARES ======
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// ====== ROUTES ======
-app.get('/', (req, res) => {
-  res.send('🚀 API Task Management is running');
-});
-
-
-
-// ====== SERVER ======
 const PORT = process.env.PORT || 5000;
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('✅ PostgreSQL connecté avec succès');
+const startServer = async () => {
+  let connected = false;
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Serveur lancé sur ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Erreur de connexion à PostgreSQL :', err);
+  while (!connected) {
+    try {
+      await sequelize.authenticate();
+      connected = true;
+      console.log('✅ PostgreSQL connecté avec succès');
+    } catch (error) {
+      console.error('⏳ PostgreSQL non prêt, nouvelle tentative dans 5s...');
+      await new Promise(res => setTimeout(res, 5000));
+    }
+  }
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Serveur lancé sur le port ${PORT}`);
   });
+};
+
+startServer();
